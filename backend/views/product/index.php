@@ -27,6 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title',
+            'img',
+            'asin',
             //'amazon_link',
             //'target_link',
             //'walmart_link',
@@ -38,10 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
             //'hayneedle_price',
             //'waifair_price',
             //'update_time',
-            //'img',
-            //'asin',
-            //'buybox',
-            //'availability',
+            'buybox',
+            'availability',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

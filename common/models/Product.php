@@ -88,6 +88,17 @@ class Product extends \yii\db\ActiveRecord
         $document = new Document($url, true);
         $priceAmazon = $document->find('#olp-upd-new')[0];
         $amazon = $priceAmazon->html();
+
+        //asin
+        $ths = $document->find('#productDetails_detailBullets_sections1 th');
+        foreach($ths as $th){
+            //echo $th->text()."<br>";
+            if(trim($th->text()) == 'ASIN'){
+                $this->asin = $th->nextSibling('td.a-size-base')->text();
+            }
+        }
+
+
         $link = $document->find('#buybox-see-all-buying-choices-announce')[0];
         //echo $link->href; die;
         $allPricesPage = $link->href;
