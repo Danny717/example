@@ -232,7 +232,6 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
                 self::MY_DELIVERED_STATUS,
             ]])
             ->andWhere([">", "created_at", $ts])
-            ->limit(100)
             ->all();
 
         return $orders ?? [];
