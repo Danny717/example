@@ -28,7 +28,7 @@ interface DeliveryServiceInterface
      *
      * @return mixed
     */
-    public function getApiResponse(string $json);
+    public function getApiResponse($json);
 
 
 }

@@ -1,14 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: daniil
- * Date: 27.08.18
- * Time: 18:26
- */
 
 namespace common\components\delivery;
 
-use common\components\marketplace\MarketplaceProvider;
 use common\models\Orders;
 use yii\helpers\Json;
 use yii\httpclient\Client;
@@ -63,17 +56,17 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
         self::NP_CHARGE_FOR_STORAGE => "Нараховується плата за зберігання",
         self::NP_REFUSAL_OF_RECIPIENT_108 => "Відмова одержувача",
     ];
-    const HB_TRANSFERRED_TO_DELIVERY_SERVICE_STATUS = 10;
-    const HB_DELIVERED_STATUS = 5;
-    const HB_NOT_PICK_UP_PARCEL_STATUS = 11;
-    const HB_REFUSED_GOODS_STATUS = 12;
-    const HB_DONE_STATUS = 6;
+    const MY_TRANSFERRED_TO_DELIVERY_SERVICE_STATUS = 10;
+    const MY_DELIVERED_STATUS = 5;
+    const MY_NOT_PICK_UP_PARCEL_STATUS = 11;
+    const MY_REFUSED_GOODS_STATUS = 12;
+    const MY_DONE_STATUS = 6;
 
-    const HB_DELIVERED_STATUSES_INDEX = 0;
-    const HB_REFUSED_GOODS_STATUSES_INDEX = 1;
-    const HB_NOT_PICK_UP_PARCEL_STATUSES_INDEX = 2;
-    const HB_TRANSFERRED_TO_DELIVERY_SERVICE_STATUSES_INDEX = 3;
-    const HB_DONE_STATUSES_INDEX = 4;
+    const MY_DELIVERED_STATUSES_INDEX = 0;
+    const MY_REFUSED_GOODS_STATUSES_INDEX = 1;
+    const MY_NOT_PICK_UP_PARCEL_STATUSES_INDEX = 2;
+    const MY_TRANSFERRED_TO_DELIVERY_SERVICE_STATUSES_INDEX = 3;
+    const MY_DONE_STATUSES_INDEX = 4;
 
     /**
      * @return bool
@@ -132,7 +125,7 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
      *
      * @return mixed
      */
-    public function getApiResponse(string $json)
+    public function getApiResponse($json)
     {
         $client = new Client();
         /** @var Response $response */
@@ -156,7 +149,7 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
     {
         $orderStatuses = [];
         $NPStatuses = [
-            self::HB_DELIVERED_STATUSES_INDEX=>
+            self::MY_DELIVERED_STATUSES_INDEX=>
             [
                 self::NP_DEPARTURE_IN_CITY_REGION,
                 self::NP_DEPARTURE_IN_CITY_INCITY,
@@ -169,21 +162,21 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
                 self::NP_ADDRESS_CHANGED,
                 self::NP_CHARGE_FOR_STORAGE
             ],
-            self::HB_REFUSED_GOODS_STATUSES_INDEX=>
+            self::MY_REFUSED_GOODS_STATUSES_INDEX=>
             [
                 self::NP_REFUSAL_OF_RECIPIENT_102,
                 self::NP_REFUSAL_OF_RECIPIENT_103,
                 self::NP_REFUSAL_OF_RECIPIENT_108
             ],
-            self::HB_NOT_PICK_UP_PARCEL_STATUSES_INDEX=>
+            self::MY_NOT_PICK_UP_PARCEL_STATUSES_INDEX=>
             [
                 self::NP_CANCELED_STORAGE
             ],
-            self::HB_TRANSFERRED_TO_DELIVERY_SERVICE_STATUSES_INDEX=>
+            self::MY_TRANSFERRED_TO_DELIVERY_SERVICE_STATUSES_INDEX=>
             [
                 self::NP_WAITING_FOR_SENDER
             ],
-            self::HB_DONE_STATUSES_INDEX=>
+            self::MY_DONE_STATUSES_INDEX=>
             [
                 self::NP_SENDING_RECEIVED,
                 self::NP_SENDING_RECEIVED_SMS,
@@ -192,34 +185,34 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
             ]
         ];
         foreach ($mailStatuses as $mailStatus) {
-            if (in_array($mailStatus["statusCode"], $NPStatuses[self::HB_DELIVERED_STATUSES_INDEX])) {
+            if (in_array($mailStatus["statusCode"], $NPStatuses[self::MY_DELIVERED_STATUSES_INDEX])) {
                 $orderStatuses[] = [
                     "ttn" => $mailStatus["ttn"],
-                    "status" => self::HB_DELIVERED_STATUS
+                    "status" => self::MY_DELIVERED_STATUS
                 ];
             }
-            if (in_array($mailStatus["statusCode"], $NPStatuses[self::HB_REFUSED_GOODS_STATUSES_INDEX])) {
+            if (in_array($mailStatus["statusCode"], $NPStatuses[self::MY_REFUSED_GOODS_STATUSES_INDEX])) {
                 $orderStatuses[] = [
                     "ttn" => $mailStatus["ttn"],
-                    "status" => self::HB_REFUSED_GOODS_STATUS
+                    "status" => self::MY_REFUSED_GOODS_STATUS
                 ];
             }
-            if (in_array($mailStatus["statusCode"], $NPStatuses[self::HB_NOT_PICK_UP_PARCEL_STATUSES_INDEX])) {
+            if (in_array($mailStatus["statusCode"], $NPStatuses[self::MY_NOT_PICK_UP_PARCEL_STATUSES_INDEX])) {
                 $orderStatuses[] = [
                     "ttn" => $mailStatus["ttn"],
-                    "status" => self::HB_NOT_PICK_UP_PARCEL_STATUS
+                    "status" => self::MY_NOT_PICK_UP_PARCEL_STATUS
                 ];
             }
-            if (in_array($mailStatus["statusCode"], $NPStatuses[self::HB_TRANSFERRED_TO_DELIVERY_SERVICE_STATUSES_INDEX])) {
+            if (in_array($mailStatus["statusCode"], $NPStatuses[self::MY_TRANSFERRED_TO_DELIVERY_SERVICE_STATUSES_INDEX])) {
                 $orderStatuses[] = [
                     "ttn" => $mailStatus["ttn"],
-                    "status" => self::HB_TRANSFERRED_TO_DELIVERY_SERVICE_STATUS
+                    "status" => self::MY_TRANSFERRED_TO_DELIVERY_SERVICE_STATUS
                 ];
             }
-            if (in_array($mailStatus["statusCode"], $NPStatuses[self::HB_DONE_STATUSES_INDEX])) {
+            if (in_array($mailStatus["statusCode"], $NPStatuses[self::MY_DONE_STATUSES_INDEX])) {
                 $orderStatuses[] = [
                     "ttn" => $mailStatus["ttn"],
-                    "status" => self::HB_DONE_STATUS
+                    "status" => self::MY_DONE_STATUS
                 ];
             }
         }
@@ -235,10 +228,9 @@ class NovaPoshtaDelivery extends DeliveryService implements DeliveryServiceInter
         $orders = Orders::find()->select("ttn,id, status, marketplace_name")
             ->where("ttn IS NOT NULL")
             ->andWhere(["status" => [
-                self::HB_TRANSFERRED_TO_DELIVERY_SERVICE_STATUS,
-                self::HB_DELIVERED_STATUS,
+                self::MY_TRANSFERRED_TO_DELIVERY_SERVICE_STATUS,
+                self::MY_DELIVERED_STATUS,
             ]])
-            //->andWhere(["<>", "marketplace_name", MarketplaceProvider::MP_ROZETKA])
             ->andWhere([">", "created_at", $ts])
             ->limit(100)
             ->all();

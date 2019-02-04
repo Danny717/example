@@ -1,12 +1,6 @@
 <?php
 
 namespace common\components\delivery;
-
-use common\components\marketplace\MarketplaceProvider;
-use common\models\Orders;
-use common\models\OrderStatusesHistory;
-use common\models\OrderStatusLog;
-use common\models\services\OrderStatusLogService;
 use yii\httpclient\Request;
 
 
@@ -133,11 +127,11 @@ abstract class DeliveryService implements DeliveryServiceInterface
             $mailStatuses = $this->checkStatuses($orders);
 
             if(!empty($mailStatuses)){
-                $hubberStatuses = $this->mapStatuses($mailStatuses);
+                $myStatuses = $this->mapStatuses($mailStatuses);
 
                 $ttns = [];
-                foreach ($hubberStatuses as $hubberStatus){
-                    $ttns[] = $hubberStatus["ttn"];
+                foreach ($myStatuses as $myStatus){
+                    $ttns[] = $myStatus["ttn"];
                 }
                 $orders = Orders::findAll(["ttn"=> $ttns]);
                 $ordersByTtnsKey = [];
@@ -146,22 +140,19 @@ abstract class DeliveryService implements DeliveryServiceInterface
                 }
 
 
-                foreach ($hubberStatuses as $status){
+                foreach ($myStatuses as $status){
 
                     $order = $ordersByTtnsKey[$status["ttn"]];
                     if($order->status != $status["status"]){
 
-                        if($order->marketplace_name == MarketplaceProvider::MP_ROZETKA){
+                        if($order->marketplace_name == MarketplaceProvider::MP_MARKET){
                             $orderStatusesLog = new OrderStatusLog();
                             $orderStatusesLogService = new OrderStatusLogService($orderStatusesLog);
-                            $orderStatusesLogService->setRozetkaWrongStatus($order,$status["status"]);
+                            $orderStatusesLogService->setMarketWrongStatus($order,$status["status"]);
                         }
                         else {
                             $oldStatus= $order->status;
                             $order->status = $status["status"];
-                            /*if(!$order->save()){
-                                 \Yii::error("Order with ID ".$order->id." does not saved!");
-                            }*/
                             try{
                                 $order->save();
                                 echo "Changed from ".$oldStatus." to ".$order->status."\n<br>";

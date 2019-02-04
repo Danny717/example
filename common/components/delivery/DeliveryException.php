@@ -1,15 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: daniil
- * Date: 28.08.18
- * Time: 12:02
- */
 
 namespace common\components\delivery;
-
-use Throwable;
-
 
 /**
  * Class DeliveryException

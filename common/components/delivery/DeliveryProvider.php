@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: daniil
- * Date: 28.08.18
- * Time: 11:11
- */
 
 namespace common\components\delivery;
 
